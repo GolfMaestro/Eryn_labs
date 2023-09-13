@@ -5,12 +5,14 @@ using namespace std;
 void menu(int choose);  // declare the functions
 void print_menu();
 
-int main()
-{
+int main() {
+
     int action;
     print_menu();
 
     for (;;) {  // eternal loop
+
+        cout << "----------------------------------\n";
         cin >> action;
         menu(action);
 
@@ -19,49 +21,54 @@ int main()
 
 
 void menu(int choose) {
-
-    if (choose == 1) {
+    
+    switch (choose) {
+    case 1:
         cout << "Add pipe\n";
         cout << "0. Return to menu\n";
-    }
+        break;
 
-    if (choose == 2) {
+    case 2:
         cout << "Add compressor station\n";
         cout << "0. Return to menu\n";
-    }
+        break;
 
-    if (choose == 3) {
+    case 3:
         cout << "View all objects\n";
         cout << "0. Return to menu\n";
-    }
+        break;
 
-    if (choose == 4) {
+    case 4:
         cout << "Edit pipe\n";
         cout << "0. Return to menu\n";
-    }
+        break;
 
-    if (choose == 5) {
+    case 5:
         cout << "Edit compressor station\n";
         cout << "0. Return to menu\n";
-    }
+        break;
 
-    if (choose == 6) {
+    case 6:
         cout << "Save\n";
         cout << "0. Return to menu\n";
-    }
+        break;
 
-    if (choose == 7) {
+    case 7:
         cout << "Load\n";
         cout << "0. Return to menu\n";
-    }
+        break;
 
-    if (choose == 0) {
+    case 0:
         print_menu();
-    }
+        break;
 
+    default:
+        cout << "Error. Command doesn't exist.\n";
+    }
 }
 
 void print_menu() {
+
     cout << "1. Add pipe\n";
     cout << "2. Add compressor station\n";
     cout << "3. View all objects\n";
@@ -70,4 +77,5 @@ void print_menu() {
     cout << "6. Save\n";
     cout << "7. Load\n";
     cout << "0. Return to menu\n";
+
 }

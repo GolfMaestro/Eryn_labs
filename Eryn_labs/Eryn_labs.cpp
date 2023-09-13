@@ -5,6 +5,43 @@ using namespace std;
 void menu(int choose);  // declare the functions
 void print_menu();
 
+struct Pipe {
+
+    string name;
+    double length;
+    double diameter;
+    bool under_repair;
+
+};
+
+struct Compressor_station {
+
+    string name;
+    int amount_workshops;
+    int amount_working_workshops;
+    double efficiency;
+
+};
+
+Pipe add_pipe() {  // "add pipe" function for struct Pipe
+
+    Pipe p;
+
+    cout << "Type name:\n";
+    cin >> p.name;
+
+    cout << "Type length:\n";
+    cin >> p.length;
+
+    cout << "Type diametr:\n";
+    cin >> p.diameter;
+
+    p.under_repair = false;
+
+    return p;
+    
+}
+
 int main() {
 
     int action;
@@ -21,17 +58,17 @@ int main() {
     }
 }
 
-
 void menu(int choose) {
-    
+
     switch (choose) {
     case 1:
         cout << "Add pipe\n";
         cout << "0. Return to menu\n";
+        add_pipe();
         break;
 
     case 2:
-        cout << "Add compressor station\n";
+        cout << "Add compressor station\n"  ;
         cout << "0. Return to menu\n";
         break;
 
@@ -81,17 +118,3 @@ void print_menu() {
     cout << "0. Return to menu\n";
 
 }
-
-struct Pipe {
-    string name;
-    double length;
-    int diameter;
-    bool under_repair;
-};
-
-struct Compressor_station {
-    string name;
-    int amount_workshops;
-    int amount_working_workshops;
-    double efficiency;
-};

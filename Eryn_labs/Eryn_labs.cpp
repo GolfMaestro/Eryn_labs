@@ -1,4 +1,5 @@
 #include <iostream>
+#include <vector>
 
 using namespace std;
 
@@ -23,6 +24,8 @@ struct Compressor_station {
 
 };
 
+vector <Pipe> pipes;
+
 Pipe add_pipe() {  // "add pipe" function for struct Pipe
 
     Pipe p;
@@ -38,9 +41,21 @@ Pipe add_pipe() {  // "add pipe" function for struct Pipe
 
     p.under_repair = false;
 
+    pipes.push_back(p);
     return p;
     
 }
+
+
+
+void print_pipe(Pipe p) {
+
+    cout << "Name: " << p.name << endl;
+    cout << "Length: " << p.length << endl;
+    cout << "Diameter: " << p.diameter << endl;
+    cout << "Under repair: " << p.under_repair << endl;
+
+}   
 
 int main() {
 
@@ -49,7 +64,7 @@ int main() {
 
     for (;;) {  // eternal loop
 
-        cout << "----------------------------------\n";
+        cout << "================================\n";
         cin >> action;
         menu(action);
         cin.clear();
@@ -63,8 +78,8 @@ void menu(int choose) {
     switch (choose) {
     case 1:
         cout << "Add pipe\n";
-        cout << "0. Return to menu\n";
         add_pipe();
+        cout << "0. Return to menu\n";
         break;
 
     case 2:
@@ -74,6 +89,11 @@ void menu(int choose) {
 
     case 3:
         cout << "View all objects\n";
+        //print_pipe(pipes[0]);
+        for (int i = 0; i < pipes.size(); ++i) {
+            print_pipe(pipes[i]);
+            cout << "------------------------------\n";
+        }
         cout << "0. Return to menu\n";
         break;
 

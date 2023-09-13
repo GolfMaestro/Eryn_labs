@@ -81,3 +81,11 @@ void print_menu() {
     cout << "0. Return to menu\n";
 
 }
+
+struct Pipe {
+    string name;
+    double length;
+    int diameter;
+    bool under_repair;
+};
+

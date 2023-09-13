@@ -89,3 +89,9 @@ struct Pipe {
     bool under_repair;
 };
 
+struct Compressor_station {
+    string name;
+    int amount_workshops;
+    int amount_working_workshops;
+    double efficiency;
+};

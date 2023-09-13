@@ -15,6 +15,8 @@ int main() {
         cout << "----------------------------------\n";
         cin >> action;
         menu(action);
+        cin.clear();
+        cin.ignore();
 
     }
 }

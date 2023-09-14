@@ -11,7 +11,7 @@ struct Pipe {
     string name;
     double length = 0;
     double diameter = 0;
-    bool under_repair;
+    bool under_repair = false;
 
 };
 
@@ -122,6 +122,11 @@ void menu(int choose) {
         cout << pipes[pipe_change].name << endl << "Under repair(y/n)";
 
         cin >> repair;
+
+        while ((repair != 'y') && (repair != 'n')) {
+            cout << "Error! Try again\n" << "Under repair(y/n)\n";
+            cin >> repair;
+        }
 
         if (repair == 'y') {
             pipes[pipe_change].under_repair = true;

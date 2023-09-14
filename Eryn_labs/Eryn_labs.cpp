@@ -9,8 +9,8 @@ void print_menu();
 struct Pipe {
 
     string name;
-    double length;
-    double diameter;
+    double length = 0;
+    double diameter = 0;
     bool under_repair;
 
 };
@@ -33,11 +33,19 @@ Pipe add_pipe() {  // "add pipe" function for struct Pipe
     cout << "Type name:\n";
     cin >> p.name;
 
-    cout << "Type length:\n";
-    cin >> p.length;
+    while (p.length == 0) {
+        cout << "Type length:\n";
+        cin >> p.length;
+        cin.clear();
+        cin.ignore();
+    }
 
-    cout << "Type diametr:\n";
-    cin >> p.diameter;
+    while (p.diameter == 0) {
+        cout << "Type diametr:\n";
+        cin >> p.diameter;
+        cin.clear();
+        cin.ignore();
+    }
 
     p.under_repair = false;
 
@@ -66,9 +74,9 @@ int main() {
 
         cout << "================================\n";
         cin >> action;
-        menu(action);
         cin.clear();
         cin.ignore();
+        menu(action);
 
     }
 }

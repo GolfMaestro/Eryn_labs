@@ -107,6 +107,30 @@ void menu(int choose) {
 
     case 4:
         cout << "Edit pipe\n";
+        cout << "Choose pipe:\n";
+        for (int i = 0; i < pipes.size(); ++i) {
+            cout << i + 1 << ". ";
+            //print_pipe(pipes[i].name);
+            cout << pipes[i].name << endl;
+        }
+
+        int pipe_change;
+        char repair;
+
+        cin >> pipe_change;
+        pipe_change -= 1;
+        cout << pipes[pipe_change].name << endl << "Under repair(y/n)";
+
+        cin >> repair;
+
+        if (repair == 'y') {
+            pipes[pipe_change].under_repair = true;
+        }
+
+        else if (repair == 'n') {
+            pipes[pipe_change].under_repair = false;
+        }
+
         cout << "0. Return to menu\n";
         break;
 

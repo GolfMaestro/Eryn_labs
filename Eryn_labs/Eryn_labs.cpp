@@ -18,13 +18,14 @@ struct Pipe {
 struct Compressor_station {
 
     string name;
-    int amount_workshops;
-    int amount_working_workshops;
-    double efficiency;
+    int amount_workshops = 0;
+    int amount_working_workshops = 0;
+    double efficiency = 0;
 
 };
 
 vector <Pipe> pipes;
+vector <Compressor_station> stations;
 
 Pipe add_pipe() {  // "add pipe" function for struct Pipe
 
@@ -54,8 +55,6 @@ Pipe add_pipe() {  // "add pipe" function for struct Pipe
     
 }
 
-
-
 void print_pipe(Pipe p) {
 
     cout << "Name: " << p.name << endl;
@@ -63,7 +62,49 @@ void print_pipe(Pipe p) {
     cout << "Diameter: " << p.diameter << endl;
     cout << "Under repair: " << p.under_repair << endl;
 
-}   
+}
+
+Compressor_station add_station() {  // "add station" function for struct Compressor_station
+
+    Compressor_station s;
+
+    cout << "Type name:\n";
+    cin >> s.name;
+
+    while (s.amount_workshops == 0) {
+        cout << "Type amount workshops:\n";
+        cin >> s.amount_workshops;
+        cin.clear();
+        cin.ignore();
+    }
+
+    while (s.amount_working_workshops == 0) {
+        cout << "Type amount working workshops:\n";
+        cin >> s.amount_working_workshops;
+        cin.clear();
+        cin.ignore();
+    }
+
+    while (s.efficiency == 0) {
+        cout << "Type efficiency:\n";
+        cin >> s.efficiency;
+        cin.clear();
+        cin.ignore();
+    }
+
+    stations.push_back(s);
+    return s;
+
+}
+
+void print_station(Compressor_station s) {
+
+    cout << "Name: " << s.name << endl;
+    cout << "Amount workshops: " << s.amount_workshops << endl;
+    cout << "Amount working workshops: " << s.amount_working_workshops << endl;
+    cout << "Efficiency: " << s.efficiency << endl;
+
+}
 
 int main() {
 
@@ -91,15 +132,22 @@ void menu(int choose) {
         break;
 
     case 2:
-        cout << "Add compressor station\n"  ;
+        cout << "Add compressor station\n";
+        add_station();
         cout << "0. Return to menu\n";
         break;
 
     case 3:
-        cout << "View all objects\n";
+        cout << "View all objects\n" << "Pipes:\n";
         //print_pipe(pipes[0]);
         for (int i = 0; i < pipes.size(); ++i) {
             print_pipe(pipes[i]);
+            cout << "------------------------------\n";
+        }
+
+        cout << "Compressor stations:\n";
+        for (int i = 0; i < stations.size(); ++i) {
+            print_station(stations[i]);
             cout << "------------------------------\n";
         }
         cout << "0. Return to menu\n";

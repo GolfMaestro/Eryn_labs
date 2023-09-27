@@ -142,20 +142,11 @@ int main() {
             break;
 
         case 4:
-            /*cout << "Edit pipe\n";
-            cout << "Choose pipe:\n";
-            for (int i = 0; i < pipes.size(); ++i) {
-                cout << i + 1 << ". ";
-                //print_pipe(pipes[i].name);
-                cout << pipes[i].name << endl;
-            }
+            cout << "Edit pipe\n";
 
-            int pipe_change;
             char repair;
 
-            cin >> pipe_change;
-            pipe_change -= 1;
-            cout << pipes[pipe_change].name << endl << "Under repair(y/n)";
+            cout << "Is pipe under repair(y/n)";
 
             cin >> repair;
 
@@ -165,14 +156,14 @@ int main() {
             }
 
             if (repair == 'y') {
-                pipes[pipe_change].under_repair = true;
+                new_pipe.under_repair = true;
             }
 
             else if (repair == 'n') {
-                pipes[pipe_change].under_repair = false;
+                new_pipe.under_repair = false;
             }
 
-            cout << "0. Return to menu\n";*/
+            cout << "0. Return to menu\n";
             break;
 
         case 5:

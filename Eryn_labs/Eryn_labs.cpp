@@ -6,6 +6,33 @@ using namespace std;
 void menu(int choose);  // declare the functions
 void print_menu();
 
+void inputint(int& x) {
+
+    cin >> x;
+    while (cin.fail() || x < 0 || cin.peek() != '\n') {
+
+        cin.clear();
+        cin.ignore(10000, '\n');
+        cout << "Error. Try again!" << endl;
+        cin >> x;
+
+    }
+}
+
+void inputdouble(double& x) {
+
+    cin >> x;
+    while (cin.fail() || x < 0 || cin.peek() != '\n') {
+
+        cin.clear();
+        cin.ignore(10000, '\n');
+        cout << "Error. Try again!" << endl;
+        cin >> x;
+
+    }
+}
+
+
 struct Pipe {
 
     string name;
@@ -18,19 +45,11 @@ struct Pipe {
         cout << "Type name:\n";
         cin >> name;
 
-        while (length == 0) {
-            cout << "Type length:\n";
-            cin >> length;
-            cin.clear();
-            cin.ignore();
-        }
+        cout << "Type length:\n";
+        inputdouble(length);
 
-        while (diameter == 0) {
-            cout << "Type diametr:\n";
-            cin >> diameter;
-            cin.clear();
-            cin.ignore();
-        }
+        cout << "Type diametr:\n";
+        inputdouble(diameter);
 
     }
 
@@ -57,19 +76,12 @@ struct Compressor_station {
         cout << "Type name:\n";
         cin >> name;
 
-        while (amount_workshops == 0) {
-            cout << "Type amount workshops:\n";
-            cin >> amount_workshops;
-            cin.clear();
-            cin.ignore();
-        }
+        cout << "Type amount workshops:\n";
+        inputint(amount_workshops);
 
-        while (amount_working_workshops == 0) {
-            cout << "Type amount working workshops:\n";
-            cin >> amount_working_workshops;
-            cin.clear();
-            cin.ignore();
-        }
+
+        cout << "Type amount working workshops:\n";
+        inputint(amount_working_workshops);
 
         while (efficiency == 0) {
             cout << "Type efficiency:\n";
@@ -120,6 +132,8 @@ int main() {
         case 3:
             cout << "View all objects\n" << "Pipe:\n";
             new_pipe.print_pipe();
+
+            cout << "--------------------------------\n";
 
             cout << "Compressor station:\n";
             new_station.print_station();

@@ -55,11 +55,17 @@ struct Pipe {
 
     void print_pipe() {
 
-        cout << "Name: " << name << endl;
-        cout << "Length: " << length << endl;
-        cout << "Diameter: " << diameter << endl;
-        cout << "Under repair: " << under_repair << endl;
+        if (diameter != 0) {
+            cout << "Pipe:\n";
+            cout << "Name: " << name << endl;
+            cout << "Length: " << length << endl;
+            cout << "Diameter: " << diameter << endl;
+            cout << "Under repair: " << under_repair << endl;
+        }
 
+        else {
+            cout << "Pipes doesn't exist\n";
+        }
     }
 
     void edit_pipe() {
@@ -118,11 +124,17 @@ struct Compressor_station {
 
     void print_station() {
 
-        cout << "Name: " << name << endl;
-        cout << "Amount workshops: " << amount_workshops << endl;
-        cout << "Amount working workshops: " << amount_working_workshops << endl;
-        cout << "Efficiency: " << efficiency << endl;
+        if (amount_workshops != 0) {
+            cout << "Compressor station:\n";
+            cout << "Name: " << name << endl;
+            cout << "Amount workshops: " << amount_workshops << endl;
+            cout << "Amount working workshops: " << amount_working_workshops << endl;
+            cout << "Efficiency: " << efficiency << endl;
+        }
 
+        else {
+            cout << "Compressor station doesn't exist\n";
+        }
     }
 
     void working_workshops_change() {
@@ -142,9 +154,51 @@ struct Compressor_station {
 
 };
 
+void save_file(ofstream& outfile, Pipe new_pipe, Compressor_station new_station, int count_pipe, int count_cs) {
+    outfile.open("saves.txt");
+
+    outfile << count_pipe << endl;
+    outfile << new_pipe.name << endl << new_pipe.length << endl << new_pipe.diameter << endl << new_pipe.under_repair << endl;
+
+    outfile << count_cs << endl;
+    outfile << new_station.name << endl << new_station.amount_workshops << endl << new_station.amount_working_workshops << endl << new_station.efficiency << endl;
+    outfile.close();
+}
+
+void load_file(ifstream& infile, Pipe& new_pipe, Compressor_station& new_station, int count_pipe, int count_cs) {
+    infile.open("saves.txt");
+
+    int cp;
+    int ccs;
+
+    infile >> cp;
+
+    if (infile.is_open()) {
+
+        for (int j = 0; j < cp; ++j) {
+            infile >> new_pipe.name;
+            infile >> new_pipe.length;
+            infile >> new_pipe.diameter;
+            infile >> new_pipe.under_repair;
+        }
+
+        infile >> ccs;
+
+        for (int j = 0; j < ccs; ++j) {
+            infile >> new_station.name;
+            infile >> new_station.amount_workshops;
+            infile >> new_station.amount_working_workshops;
+            infile >> new_station.efficiency;
+        }
+
+        infile.close();
+    }
+}
 
 int main() {
 
+    int count_pipe = 0;
+    int count_cs = 0;
     int choose;
     print_menu();
     Pipe new_pipe;
@@ -163,17 +217,19 @@ int main() {
         case 1:
             cout << "Add pipe\n";
             new_pipe.add_pipe();
+            count_pipe += 1;
             cout << "0. Return to menu\n";
             break;
 
         case 2:
             cout << "Add compressor station\n";
             new_station.add_station();
+            count_cs += 1;
             cout << "0. Return to menu\n";
             break;
 
         case 3:
-            cout << "View all objects\n" << "Pipe:\n";
+            cout << "View all objects\n";
             new_pipe.print_pipe();
 
             cout << "--------------------------------\n";
@@ -198,33 +254,14 @@ int main() {
             break;
 
         case 6:
-            outfile.open("saves.txt");
             cout << "Save\n";
-            outfile << new_pipe.name << endl << new_pipe.length << endl << new_pipe.diameter << endl << new_pipe.under_repair << endl;
-            outfile << new_station.name << endl << new_station.amount_workshops << endl << new_station.amount_working_workshops << endl << new_station.efficiency << endl;
-            outfile.close();
+            save_file(outfile, new_pipe, new_station, count_pipe, count_cs);
             cout << "0. Return to menu\n";
             break;
 
         case 7:
             cout << "Load\n";
-            infile.open("saves.txt");
-            
-            if (infile.is_open()) {
-
-                infile >> new_pipe.name;
-                infile >> new_pipe.length;
-                infile >> new_pipe.diameter;
-                infile >> new_pipe.under_repair;
-
-                infile >> new_station.name;
-                infile >> new_station.amount_workshops;
-                infile >> new_station.amount_working_workshops;
-                infile >> new_station.efficiency;
-
-                infile.close();
-            }
-
+            load_file(infile, new_pipe, new_station, count_pipe, count_cs);
             cout << "0. Return to menu\n";
             break;
 
@@ -239,6 +276,7 @@ int main() {
 
 
     }
+
 }
 
 

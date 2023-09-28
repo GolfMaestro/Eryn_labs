@@ -3,7 +3,7 @@
 
 using namespace std;
 
-void menu(int choose);  // declare the functions
+//void menu(int choose);  // declare the functions
 void print_menu();
 
 void inputint(int& x) {
@@ -76,12 +76,17 @@ struct Compressor_station {
         cout << "Type name:\n";
         cin >> name;
 
+
         cout << "Type amount workshops:\n";
         inputint(amount_workshops);
 
-
         cout << "Type amount working workshops:\n";
-        inputint(amount_working_workshops);
+        cin >> amount_working_workshops;
+        while (amount_working_workshops > amount_workshops) {
+            cout << "Error. There's no so many workshops. Try again\n";
+            inputint(amount_working_workshops);
+        }
+        //inputint(amount_working_workshops);
 
         while (efficiency == 0) {
             cout << "Type efficiency:\n";
@@ -89,6 +94,7 @@ struct Compressor_station {
             cin.clear();
             cin.ignore();
         }
+
     }
 
     void print_station() {
@@ -97,6 +103,20 @@ struct Compressor_station {
         cout << "Amount workshops: " << amount_workshops << endl;
         cout << "Amount working workshops: " << amount_working_workshops << endl;
         cout << "Efficiency: " << efficiency << endl;
+
+    }
+
+    void working_workshops_change() {
+
+        int aww;
+        cin >> aww;
+
+        while (aww > amount_workshops) {
+            cout << "Error. There's no so many workshops. Try again\n";
+            inputint(aww);
+        }
+
+        amount_working_workshops = aww;
 
     }
 };
@@ -168,6 +188,8 @@ int main() {
 
         case 5:
             cout << "Edit compressor station\n";
+            cout << "Type amount of working workshops: ";
+            new_station.working_workshops_change();
             cout << "0. Return to menu\n";
             break;
 

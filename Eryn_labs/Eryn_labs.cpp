@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <fstream>
+#include <string>
 
 using namespace std;
 
@@ -63,16 +64,6 @@ struct Pipe {
 
     }
 
-    void save_pipe() {
-
-        ofstream inoutfile;
-        inoutfile.open("saves.txt");
-
-        inoutfile << name << endl << length << endl << diameter << endl << under_repair << endl;
-        inoutfile.close();
-
-    }
-
 };
 
 struct Compressor_station {
@@ -131,14 +122,6 @@ struct Compressor_station {
 
     }
 
-    void save_station() {
-
-        ofstream inoutfile;
-        inoutfile.open("saves.txt");
-        inoutfile << name << endl << amount_workshops << endl << amount_working_workshops << endl << efficiency << endl;
-        inoutfile.close();
-
-    }
 };
 
 
@@ -148,8 +131,11 @@ int main() {
     print_menu();
     Pipe new_pipe;
     Compressor_station new_station;
-    ofstream inoutfile;
-    inoutfile.open("saves.txt");
+    ofstream outfile;
+    ifstream infile;
+    string linein;
+    vector<Pipe> pipev;
+    vector<Compressor_station> cs;
 
     for (;;) {  // eternal loop
 
@@ -216,17 +202,31 @@ int main() {
             break;
 
         case 6:
+            outfile.open("saves.txt");
             cout << "Save\n";
-            //new_pipe.save_pipe();
-            //new_station.save_station();
-            inoutfile << new_pipe.name << endl << new_pipe.length << endl << new_pipe.diameter << endl << new_pipe.under_repair << endl;
-            inoutfile << new_station.name << endl << new_station.amount_workshops << endl << new_station.amount_working_workshops << endl << new_station.efficiency << endl;
-            inoutfile.close();
+            outfile << new_pipe.name << endl << new_pipe.length << endl << new_pipe.diameter << endl << new_pipe.under_repair << endl;
+            outfile << new_station.name << endl << new_station.amount_workshops << endl << new_station.amount_working_workshops << endl << new_station.efficiency << endl;
+            outfile.close();
             cout << "0. Return to menu\n";
             break;
 
         case 7:
             cout << "Load\n";
+            infile.open("saves.txt");
+            
+            if (infile.is_open()) {
+
+                infile >> new_pipe.name;
+                infile >> new_pipe.length;
+                infile >> new_pipe.diameter;
+                infile >> new_pipe.under_repair;
+
+                infile >> new_station.name;
+                infile >> new_station.amount_workshops;
+                infile >> new_station.amount_working_workshops;
+                infile >> new_station.efficiency;
+            }
+
             cout << "0. Return to menu\n";
             break;
 

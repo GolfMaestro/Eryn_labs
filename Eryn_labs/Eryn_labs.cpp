@@ -1,12 +1,9 @@
 #include <iostream>
-#include <vector>
 #include <fstream>
-#include <string>
 
 using namespace std;
 
-//void menu(int choose);  // declare the functions
-void print_menu();
+void print_menu(); // declare the function
 
 void inputint(int& x) {
 
@@ -24,6 +21,7 @@ void inputint(int& x) {
 void inputdouble(double& x) {
 
     cin >> x;
+
     while (cin.fail() || x < 0 || cin.peek() != '\n') {
 
         cin.clear();
@@ -66,6 +64,7 @@ struct Pipe {
 
 };
 
+
 struct Compressor_station {
 
     string name;
@@ -73,28 +72,29 @@ struct Compressor_station {
     int amount_working_workshops = 0;
     double efficiency = 0;
 
-    void add_station() {  // "add station" function for struct Compressor_station
+    void add_station() { 
 
         cout << "Type name:\n";
         cin >> name;
-
 
         cout << "Type amount workshops:\n";
         inputint(amount_workshops);
 
         cout << "Type amount working workshops:\n";
         cin >> amount_working_workshops;
+
         while (amount_working_workshops > amount_workshops) {
             cout << "Error. There's no so many workshops. Try again\n";
             inputint(amount_working_workshops);
         }
-        //inputint(amount_working_workshops);
 
         while (efficiency == 0) {
+
             cout << "Type efficiency:\n";
             cin >> efficiency;
             cin.clear();
             cin.ignore();
+
         }
 
     }
@@ -110,7 +110,7 @@ struct Compressor_station {
 
     void working_workshops_change() {
 
-        int aww;
+        int aww; // short amount_working_workshops
         cin >> aww;
 
         while (aww > amount_workshops) {
@@ -134,8 +134,6 @@ int main() {
     ofstream outfile;
     ifstream infile;
     string linein;
-    vector<Pipe> pipev;
-    vector<Compressor_station> cs;
 
     for (;;) {  // eternal loop
 
@@ -145,6 +143,7 @@ int main() {
         cin.ignore();
 
         switch (choose) {
+
         case 1:
             cout << "Add pipe\n";
             new_pipe.add_pipe();
@@ -225,6 +224,8 @@ int main() {
                 infile >> new_station.amount_workshops;
                 infile >> new_station.amount_working_workshops;
                 infile >> new_station.efficiency;
+
+                infile.close();
             }
 
             cout << "0. Return to menu\n";
@@ -236,6 +237,7 @@ int main() {
 
         default:
             cout << "Error. Command doesn't exist.\n";
+            print_menu();
         }
 
 

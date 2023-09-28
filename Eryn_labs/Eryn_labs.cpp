@@ -37,7 +37,7 @@ struct Pipe {
 
     string name;
     double length = 0;
-    double diameter = 0;
+    int diameter = 0;
     bool under_repair = false;
 
     void add_pipe() {  // "add pipe" function for struct Pipe
@@ -49,7 +49,7 @@ struct Pipe {
         inputdouble(length);
 
         cout << "Type diametr:\n";
-        inputdouble(diameter);
+        inputint(diameter);
 
     }
 
@@ -59,6 +59,29 @@ struct Pipe {
         cout << "Length: " << length << endl;
         cout << "Diameter: " << diameter << endl;
         cout << "Under repair: " << under_repair << endl;
+
+    }
+
+    void edit_pipe() {
+
+        char repair;
+
+        cout << "Is pipe under repair(y/n)";
+
+        cin >> repair;
+
+        while ((repair != 'y') && (repair != 'n')) {
+            cout << "Error! Try again\n" << "Under repair(y/n)\n";
+            cin >> repair;
+        }
+
+        if (repair == 'y') {
+            under_repair = true;
+        }
+
+        else if (repair == 'n') {
+            under_repair = false;
+        }
 
     }
 
@@ -81,21 +104,15 @@ struct Compressor_station {
         inputint(amount_workshops);
 
         cout << "Type amount working workshops:\n";
-        cin >> amount_working_workshops;
+        inputint(amount_working_workshops);
 
         while (amount_working_workshops > amount_workshops) {
             cout << "Error. There's no so many workshops. Try again\n";
             inputint(amount_working_workshops);
         }
 
-        while (efficiency == 0) {
-
-            cout << "Type efficiency:\n";
-            cin >> efficiency;
-            cin.clear();
-            cin.ignore();
-
-        }
+        cout << "Type efficiency:\n";
+        inputdouble(efficiency);
 
     }
 
@@ -111,7 +128,8 @@ struct Compressor_station {
     void working_workshops_change() {
 
         int aww; // short amount_working_workshops
-        cin >> aww;
+
+        inputint(aww);
 
         while (aww > amount_workshops) {
             cout << "Error. There's no so many workshops. Try again\n";
@@ -138,9 +156,7 @@ int main() {
     for (;;) {  // eternal loop
 
         cout << "================================\n";
-        cin >> choose;
-        cin.clear();
-        cin.ignore();
+        inputint(choose);
 
         switch (choose) {
 
@@ -170,26 +186,7 @@ int main() {
 
         case 4:
             cout << "Edit pipe\n";
-
-            char repair;
-
-            cout << "Is pipe under repair(y/n)";
-
-            cin >> repair;
-
-            while ((repair != 'y') && (repair != 'n')) {
-                cout << "Error! Try again\n" << "Under repair(y/n)\n";
-                cin >> repair;
-            }
-
-            if (repair == 'y') {
-                new_pipe.under_repair = true;
-            }
-
-            else if (repair == 'n') {
-                new_pipe.under_repair = false;
-            }
-
+            new_pipe.edit_pipe();
             cout << "0. Return to menu\n";
             break;
 

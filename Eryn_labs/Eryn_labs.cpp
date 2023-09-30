@@ -1,5 +1,6 @@
 #include <iostream>
 #include <fstream>
+#include <string>
 
 using namespace std;
 
@@ -32,6 +33,17 @@ void inputdouble(double& x) {
     }
 }
 
+void inputbool(bool& a)
+{
+    cin >> a;
+    while (!cin || !(a == 0 || a == 1) || cin.peek() != '\n')
+    {
+        cin.clear();
+        cin.ignore(1000, '\n');
+        cout << "Please, try again: ";
+        cin >> a;
+    }
+};
 
 struct Pipe {
 
@@ -89,6 +101,64 @@ struct Pipe {
             under_repair = false;
         }
 
+    }
+
+    void save_pipe() {
+
+        if (name.empty())
+        {
+            cout << "You don't have the pipe to save\n";
+        }
+        else
+        {
+            ofstream fout;
+            fout.open("date.txt", ios::app);
+            if (fout.is_open())
+            {
+                fout << "Pipe:" << endl;
+                fout << name << endl << length << endl << diameter << endl << under_repair << endl;
+            }
+            fout.close();
+            cout << "Pipe successfully saved!" << " " << "Please, check your file." << endl;
+        }
+    }
+
+    void load_pipe() 
+    {
+        bool replace_data;
+        replace_data = 1;
+        if (!name.empty())
+        {
+            cout << "You already have data about your pipe!" << endl;
+            cout << "If you are sure you want to replace them with data from the file, then press 1, otherwise 0: ";
+            inputbool(replace_data);
+        }
+        if (replace_data == 1)
+        {
+            ifstream fin;
+            string line;
+            fin.open("date.txt", ios::in);
+            if (fin.is_open())
+            {
+                while (getline(fin, line))
+                {
+                    if (line == "Pipe:")
+                    {
+                        getline(fin, name);
+                        fin >> length >> diameter >> under_repair;
+                    }
+                }
+                fin.close();
+                if (name.empty())
+                {
+                    cout << "You don't have data about the pipe to download\n";
+                }
+                else
+                {
+                    cout << "Your pipe data has been successfully download!" << " " << " Press 3 to check your objects. " << endl;
+                }
+            }
+        }
     }
 
 };
@@ -152,48 +222,67 @@ struct Compressor_station {
 
     }
 
-};
-
-void save_file(ofstream& outfile, Pipe new_pipe, Compressor_station new_station, int count_pipe, int count_cs) {
-    outfile.open("saves.txt");
-
-    outfile << count_pipe << endl;
-    outfile << new_pipe.name << endl << new_pipe.length << endl << new_pipe.diameter << endl << new_pipe.under_repair << endl;
-
-    outfile << count_cs << endl;
-    outfile << new_station.name << endl << new_station.amount_workshops << endl << new_station.amount_working_workshops << endl << new_station.efficiency << endl;
-    outfile.close();
-}
-
-void load_file(ifstream& infile, Pipe& new_pipe, Compressor_station& new_station, int count_pipe, int count_cs) {
-    infile.open("saves.txt");
-
-    int cp;
-    int ccs;
-
-    infile >> cp;
-
-    if (infile.is_open()) {
-
-        for (int j = 0; j < cp; ++j) {
-            infile >> new_pipe.name;
-            infile >> new_pipe.length;
-            infile >> new_pipe.diameter;
-            infile >> new_pipe.under_repair;
+    void save_station() {
+    
+        if (name.empty())
+        {
+            cout << "You don't have the compressor station to save.\n";
         }
-
-        infile >> ccs;
-
-        for (int j = 0; j < ccs; ++j) {
-            infile >> new_station.name;
-            infile >> new_station.amount_workshops;
-            infile >> new_station.amount_working_workshops;
-            infile >> new_station.efficiency;
+        else
+        {
+            ofstream fout;
+            fout.open("date.txt", ios::app);
+            if (fout.is_open())
+            {
+                fout << "Compressor station:" << endl;
+                fout << name << endl << amount_workshops << endl << amount_working_workshops << endl << efficiency << endl;
+            }
+            fout.close();
+            cout << "Compressor station successfully saved!" << " " << "Please, check your file." << endl;
         }
-
-        infile.close();
+    
     }
-}
+
+    void load_station ()
+    {
+        bool replace_data;
+        replace_data = 1;
+        if (!name.empty())
+        {
+            cout << "You already have data about your compressor station!" << endl;
+            cout << "If you are sure you want to replace them with data from the file, then press 1, otherwise 0: ";
+            inputbool(replace_data);
+        }
+        if (replace_data == 1)
+        {
+            ifstream fin;
+            string line;
+            fin.open("date.txt", ios::in);
+            if (fin.is_open())
+            {
+                string line;
+                while (getline(fin, line))
+                {
+                    if (line == "Compressor station:")
+                    {
+                        getline(fin, name);
+                        fin >> amount_workshops >> amount_working_workshops >> efficiency;
+                    }
+                }
+                fin.close();
+                if (name.empty())
+                {
+                    cout << "You don't have data about the compressor station to download.\n";
+                }
+                else
+                {
+                    cout << "Your compressor station data has been successfully download!" << " " << " Press 3 to check your objects. " << endl;
+                }
+            }
+        }
+    }
+
+};
 
 int main() {
 
@@ -203,8 +292,7 @@ int main() {
     print_menu();
     Pipe new_pipe;
     Compressor_station new_station;
-    ofstream outfile;
-    ifstream infile;
+    fstream date_file("date.txt");
     string linein;
 
     for (;;) {  // eternal loop
@@ -234,7 +322,6 @@ int main() {
 
             cout << "--------------------------------\n";
 
-            cout << "Compressor station:\n";
             new_station.print_station();
 
             cout << "0. Return to menu\n";
@@ -255,13 +342,23 @@ int main() {
 
         case 6:
             cout << "Save\n";
-            save_file(outfile, new_pipe, new_station, count_pipe, count_cs);
+            new_pipe.save_pipe();
+            new_station.save_station();
             cout << "0. Return to menu\n";
             break;
 
         case 7:
             cout << "Load\n";
-            load_file(infile, new_pipe, new_station, count_pipe, count_cs);
+            if (date_file.peek() == EOF)
+            {
+                cout << "File is empty!" << " " << "Please, check your data about your objects!!!" << endl;
+                date_file.close();
+            }
+            else
+            {
+                new_pipe.load_pipe();
+                new_station.load_station();
+            }
             cout << "0. Return to menu\n";
             break;
 

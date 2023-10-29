@@ -1,10 +1,25 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <ctime>
+#include <chrono>
 
 using namespace std;
 
 void print_menu(); // declare the function
+
+template <typename T>
+void logging(T input) {
+
+    ofstream fout;
+    fout.open("log.txt", ios::app);
+    if (fout.is_open())
+    {
+        fout << input << endl;
+    }
+    fout.close();
+
+}
 
 void inputint(int& x) {
 
@@ -17,6 +32,7 @@ void inputint(int& x) {
         cin >> x;
 
     }
+    logging(x);
 }
 
 void inputdouble(double& x) {
@@ -31,6 +47,7 @@ void inputdouble(double& x) {
         cin >> x;
 
     }
+    logging(x);
 }
 
 void inputbool(bool& a)
@@ -43,6 +60,7 @@ void inputbool(bool& a)
         cout << "Please, try again: ";
         cin >> a;
     }
+    logging(a);
 };
 
 struct Pipe {
@@ -285,6 +303,10 @@ struct Compressor_station {
 };
 
 int main() {
+    
+    remove("log.txt");  //recreate log file
+
+    //logging("-----------------");  //expand current log file
 
     int count_pipe = 0;
     int count_cs = 0;
@@ -299,6 +321,7 @@ int main() {
 
         cout << "================================\n";
         inputint(choose);
+        logging(choose);
 
         switch (choose) {
 

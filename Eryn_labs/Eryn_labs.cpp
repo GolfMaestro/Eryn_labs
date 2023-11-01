@@ -1,414 +1,247 @@
 #include <iostream>
 #include <fstream>
 #include <string>
-#include <ctime>
-#include <chrono>
-
+#include <vector>
+#include <set>
+#include <unordered_map>
+#include "CPipe.h"
+#include "CStation.h"
+#include "utils.h"
 using namespace std;
 
-void print_menu(); // declare the function
+template<typename T>
+void add_object(unordered_map<int, T>& objects) {
+    T obj;
+    cin >> obj;
+    objects.insert({ obj.id, obj });
+}
+
+void show_objects(unordered_map<int, CPipe>& pipes, unordered_map<int, CStation>& stations) {
+
+    if (pipes.size() > 0) {
+        cout << "Pipes: " << endl;
+        for (auto& i : pipes) cout << i.second << endl;
+    }
+    else cout << "Pipes doesn't exist\n";
+
+    if (stations.size() > 0) {
+        cout << "Stations: " << endl;
+        for (auto& i : stations) cout << i.second << endl;
+    }
+    else cout << "Stations doesn't exist\n";
+
+}
+
+void edit_pipes(unordered_map<int, CPipe>& pipes) {
+
+    set<int> pipes_to_edit;
+
+    if (pipes.size() > 0) {
+        cout << "Edit all pipes - 0, choose pipes to edit - 1" << endl;
+        if (get_correct_number(0, 1)) {
+            while (true) {
+                cout << "0 - stop, 1 - continue" << endl;
+                if (get_correct_number(0, 1)) {
+                    cout << "Enter id: " << endl;
+                    pipes_to_edit.insert(get_correct_number(0, CPipe::MaxId));
+                }
+                else break;
+            }
+            for (auto i : pipes_to_edit) for (auto& j : pipes) if (j.second.id == i) j.second.edit_pipe();
+        }
+        else for (auto& i : pipes) i.second.edit_pipe();
+    }
+    else cout << "Pipes doesn't exist\n";
+
+}
+
+void edit_stations(unordered_map<int, CStation>& stations) {
+
+    if (stations.size() > 0) (select_station(stations)).edit_station();
+    else cout << "Station doesn't exist\n";
+
+}
+
+void delete_object(unordered_map<int, CPipe>& pipes, unordered_map<int, CStation>& stations) {
+
+    int id;
+    cout << "Delete pipe - 0, delete station - 1" << endl;
+    int command = get_correct_number(0, 1);
+
+    if (command && stations.size() > 0) {
+        cout << "Enter id" << endl;
+        id = get_correct_number(0, CStation::MaxId - 1);
+        erase(stations, id);
+    }
+    else if (command && stations.size() == 0) cout << "Stations doesn't exist\n";
+    if (!command && pipes.size() > 0) {
+        cout << "Enter id" << endl;
+        id = get_correct_number(0, CPipe::MaxId - 1);
+        erase(pipes, id);
+    }
+    else if (!command && pipes.size() == 0) cout << "Pipes doesn't exist\n";
+
+}
+
+template<typename T>
+using PFilter = bool(*)(const CPipe& s, T param);
+
+template<typename T>
+using SFilter = bool(*)(const CStation& s, T param);
 
 template <typename T>
-void logging(T input) {
-
-    ofstream fout;
-    fout.open("log.txt", ios::app);
-    if (fout.is_open())
-    {
-        fout << input << endl;
-    }
-    fout.close();
-
+unordered_map<int, CPipe> find_pipe_by_filter(const unordered_map<int, CPipe>& objects, PFilter<T> f, T param) {
+    unordered_map<int, CPipe> res;
+    for (auto s : objects) if (f(s.second, param)) res.insert({ s.first, s.second });
+    if (res.size() == 0) cout << "Pipes with such parameters doesn't exist\n";
+    return res;
 }
 
-void inputint(int& x) {
-
-    cin >> x;
-    while (cin.fail() || x < 0 || cin.peek() != '\n') {
-
-        cin.clear();
-        cin.ignore(10000, '\n');
-        cout << "Error. Try again!" << endl;
-        cin >> x;
-
-    }
-    logging(x);
+template <typename T>
+unordered_map<int, CStation> find_station_by_filter(const unordered_map<int, CStation>& objects, SFilter<T> f, T param) {
+    unordered_map<int, CStation> res;
+    for (auto& s : objects) if (f(s.second, param)) res.insert(s);
+    if (res.size() == 0) cout << "Stations with such parameters doesn't exist\n";
+    return res;
 }
 
-void inputdouble(double& x) {
-
-    cin >> x;
-
-    while (cin.fail() || x < 0 || cin.peek() != '\n') {
-
-        cin.clear();
-        cin.ignore(10000, '\n');
-        cout << "Error. Try again!" << endl;
-        cin >> x;
-
-    }
-    logging(x);
-}
-
-void inputbool(bool& a)
+template<typename T>
+bool check_by_name(const T& s, string param)
 {
-    cin >> a;
-    while (!cin || !(a == 0 || a == 1) || cin.peek() != '\n')
-    {
-        cin.clear();
+    bool found = s.name.find(param) != string::npos;
+    return found;
+}
+
+bool check_by_reparied(const CPipe& s, bool param)
+{
+    return s.reparied == param;
+}
+
+bool check_by_working_guilds(const CStation& s, double target)
+{
+    double wg = s.number_of_working_guild;
+    double g = s.number_of_guild;
+    return ((g - wg) / g) * 100 == target;
+}
+
+void find_pipe(const unordered_map<int, CPipe>& pipes) {
+
+    if (pipes.size() == 0) {
+        cout << "Pipes doesn't exist\n";
+        return;
+    }
+
+    string name;
+    int command;
+    bool status;
+    cout << "Find pipe by name - 0, find pipe by reparied status - 1 :" << endl;
+    command = get_correct_number(0, 1);
+
+    if (command) {
+        cout << "Enter reparied status (0 - no, 1 - yes): " << endl;
+        cin >> status;
+        for (auto i : find_pipe_by_filter(pipes, check_by_reparied, status))
+            cout << i.second;
+    }
+    else {
+        cout << "Enter name: " << endl;
         cin.ignore(1000, '\n');
-        cout << "Please, try again: ";
-        cin >> a;
+        getline(cin, name);
+        for (auto i : find_pipe_by_filter(pipes, check_by_name, name))
+            cout << i.second;
     }
-    logging(a);
-};
 
-struct Pipe {
+}
+
+void find_station(const unordered_map<int, CStation>& stations) {
+
+    if (stations.size() == 0) {
+        cout << "Stations doesn't exist\n";
+        return;
+    }
 
     string name;
-    double length = 0;
-    int diameter = 0;
-    bool under_repair = false;
+    int command;
+    cout << "Find station by name - 0, find station by percentage of not working guilds - 1 :" << endl;
+    command = get_correct_number(0, 1);
 
-    void add_pipe() {  // "add pipe" function for struct Pipe
-
-        cout << "Type name:\n";
-        cin >> name;
-
-        cout << "Type length:\n";
-        inputdouble(length);
-
-        cout << "Type diametr:\n";
-        inputint(diameter);
-
+    if (command) {
+        cout << "Enter percentage of not working guilds" << endl;
+        double target = get_correct_number(0.0, 100.0);
+        for (auto i : find_station_by_filter(stations, check_by_working_guilds, target))
+            cout << i.second;
+    }
+    else {
+        cout << "Enter name: " << endl;
+        cin.ignore(1000, '\n');
+        getline(cin, name);
+        for (auto i : find_station_by_filter(stations, check_by_name, name))
+            cout << i.second;
     }
 
-    void print_pipe() {
+}
 
-        if (diameter != 0) {
-            cout << "Pipe:\n";
-            cout << "Name: " << name << endl;
-            cout << "Length: " << length << endl;
-            cout << "Diameter: " << diameter << endl;
-            cout << "Under repair: " << under_repair << endl;
-        }
+void menu() {
 
-        else {
-            cout << "Pipes doesn't exist\n";
-        }
-    }
+    cout << "1.  Add pipe\n";
+    cout << "2.  Add compressor station\n";
+    cout << "3.  View all objects\n";
+    cout << "4.  Edit pipe\n";
+    cout << "5.  Edit compressor station\n";
+    cout << "6.  Save\n";
+    cout << "7.  Load\n";
+    cout << "0.  Return to menu\n";
+    cout << "8.  Find pipe by filter\n";
+    cout << "9.  Find station by filter\n";
+    cout << "10. Delete object by id\n";
+    cout << "0.  Exit\n";
 
-    void edit_pipe() {
-
-        char repair;
-
-        cout << "Is pipe under repair(y/n)";
-
-        cin >> repair;
-
-        while ((repair != 'y') && (repair != 'n')) {
-            cout << "Error! Try again\n" << "Under repair(y/n)\n";
-            cin >> repair;
-        }
-
-        if (repair == 'y') {
-            under_repair = true;
-        }
-
-        else if (repair == 'n') {
-            under_repair = false;
-        }
-
-    }
-
-    void save_pipe() {
-
-        if (name.empty())
-        {
-            cout << "You don't have the pipe to save\n";
-        }
-        else
-        {
-            ofstream fout;
-            fout.open("date.txt", ios::app);
-            if (fout.is_open())
-            {
-                fout << "Pipe:" << endl;
-                fout << name << endl << length << endl << diameter << endl << under_repair << endl;
-            }
-            fout.close();
-            cout << "Pipe successfully saved!" << " " << "Please, check your file." << endl;
-        }
-    }
-
-    void load_pipe() 
-    {
-        bool replace_data;
-        replace_data = 1;
-        if (!name.empty())
-        {
-            cout << "You already have data about your pipe!" << endl;
-            cout << "If you are sure you want to replace them with data from the file, then press 1, otherwise 0: ";
-            inputbool(replace_data);
-        }
-        if (replace_data == 1)
-        {
-            ifstream fin;
-            string line;
-            fin.open("date.txt", ios::in);
-            if (fin.is_open())
-            {
-                while (getline(fin, line))
-                {
-                    if (line == "Pipe:")
-                    {
-                        getline(fin, name);
-                        fin >> length >> diameter >> under_repair;
-                    }
-                }
-                fin.close();
-                if (name.empty())
-                {
-                    cout << "You don't have data about the pipe to download\n";
-                }
-                else
-                {
-                    cout << "Your pipe data has been successfully download!" << " " << " Press 3 to check your objects. " << endl;
-                }
-            }
-        }
-    }
-
-};
-
-
-struct Compressor_station {
-
-    string name;
-    int amount_workshops = 0;
-    int amount_working_workshops = 0;
-    double efficiency = 0;
-
-    void add_station() { 
-
-        cout << "Type name:\n";
-        cin >> name;
-
-        cout << "Type amount workshops:\n";
-        inputint(amount_workshops);
-
-        cout << "Type amount working workshops:\n";
-        inputint(amount_working_workshops);
-
-        while (amount_working_workshops > amount_workshops) {
-            cout << "Error. There's no so many workshops. Try again\n";
-            inputint(amount_working_workshops);
-        }
-
-        cout << "Type efficiency:\n";
-        inputdouble(efficiency);
-
-    }
-
-    void print_station() {
-
-        if (amount_workshops != 0) {
-            cout << "Compressor station:\n";
-            cout << "Name: " << name << endl;
-            cout << "Amount workshops: " << amount_workshops << endl;
-            cout << "Amount working workshops: " << amount_working_workshops << endl;
-            cout << "Efficiency: " << efficiency << endl;
-        }
-
-        else {
-            cout << "Compressor station doesn't exist\n";
-        }
-    }
-
-    void working_workshops_change() {
-
-        int aww; // short amount_working_workshops
-
-        inputint(aww);
-
-        while (aww > amount_workshops) {
-            cout << "Error. There's no so many workshops. Try again\n";
-            inputint(aww);
-        }
-
-        amount_working_workshops = aww;
-
-    }
-
-    void save_station() {
-    
-        if (name.empty())
-        {
-            cout << "You don't have the compressor station to save.\n";
-        }
-        else
-        {
-            ofstream fout;
-            fout.open("date.txt", ios::app);
-            if (fout.is_open())
-            {
-                fout << "Compressor station:" << endl;
-                fout << name << endl << amount_workshops << endl << amount_working_workshops << endl << efficiency << endl;
-            }
-            fout.close();
-            cout << "Compressor station successfully saved!" << " " << "Please, check your file." << endl;
-        }
-    
-    }
-
-    void load_station ()
-    {
-        bool replace_data;
-        replace_data = 1;
-        if (!name.empty())
-        {
-            cout << "You already have data about your compressor station!" << endl;
-            cout << "If you are sure you want to replace them with data from the file, then press 1, otherwise 0: ";
-            inputbool(replace_data);
-        }
-        if (replace_data == 1)
-        {
-            ifstream fin;
-            string line;
-            fin.open("date.txt", ios::in);
-            if (fin.is_open())
-            {
-                string line;
-                while (getline(fin, line))
-                {
-                    if (line == "Compressor station:")
-                    {
-                        getline(fin, name);
-                        fin >> amount_workshops >> amount_working_workshops >> efficiency;
-                    }
-                }
-                fin.close();
-                if (name.empty())
-                {
-                    cout << "You don't have data about the compressor station to download.\n";
-                }
-                else
-                {
-                    cout << "Your compressor station data has been successfully download!" << " " << " Press 3 to check your objects. " << endl;
-                }
-            }
-        }
-    }
-
-};
+}
 
 int main() {
-    
-    remove("log.txt");  //recreate log file
 
-    //logging("-----------------");  //expand current log file
+    unordered_map<int, CPipe> pipes;
+    unordered_map<int, CStation> stations;
 
-    int count_pipe = 0;
-    int count_cs = 0;
-    int choose;
-    print_menu();
-    Pipe new_pipe;
-    Compressor_station new_station;
-    fstream date_file("date.txt");
-    string linein;
-
-    for (;;) {  // eternal loop
-
+    for (;;) {
+        menu();
         cout << "================================\n";
-        inputint(choose);
-        logging(choose);
-
-        switch (choose) {
-
+        int command = get_correct_number(0, 10);
+        switch (command) {
         case 1:
-            cout << "Add pipe\n";
-            new_pipe.add_pipe();
-            count_pipe += 1;
-            cout << "0. Return to menu\n";
+            add_object(pipes);
             break;
-
         case 2:
-            cout << "Add compressor station\n";
-            new_station.add_station();
-            count_cs += 1;
-            cout << "0. Return to menu\n";
+            add_object(stations);
             break;
-
         case 3:
-            cout << "View all objects\n";
-            new_pipe.print_pipe();
-
-            cout << "--------------------------------\n";
-
-            new_station.print_station();
-
-            cout << "0. Return to menu\n";
+            show_objects(pipes, stations);
             break;
-
         case 4:
-            cout << "Edit pipe\n";
-            new_pipe.edit_pipe();
-            cout << "0. Return to menu\n";
+            edit_pipes(pipes);
             break;
-
         case 5:
-            cout << "Edit compressor station\n";
-            cout << "Type amount of working workshops: ";
-            new_station.working_workshops_change();
-            cout << "0. Return to menu\n";
+            edit_stations(stations);
             break;
-
         case 6:
-            cout << "Save\n";
-            new_pipe.save_pipe();
-            new_station.save_station();
-            cout << "0. Return to menu\n";
+            save_to_file(pipes, stations);
             break;
-
         case 7:
-            cout << "Load\n";
-            if (date_file.peek() == EOF)
-            {
-                cout << "File is empty!" << " " << "Please, check your data about your objects!!!" << endl;
-                date_file.close();
-            }
-            else
-            {
-                new_pipe.load_pipe();
-                new_station.load_station();
-            }
-            cout << "0. Return to menu\n";
+            load_from_file(pipes, stations);
             break;
-
-        case 0:
-            print_menu();
+        case 8:
+            find_pipe(pipes);
             break;
-
-        default:
-            cout << "Error. Command doesn't exist.\n";
-            print_menu();
+        case 9:
+            find_station(stations);
+            break;
+        case 10:
+            delete_object(pipes, stations);
+            break;
+        case 0: return 0;
         }
-
-
     }
 
-}
-
-
-void print_menu() {
-
-    cout << "1. Add pipe\n";
-    cout << "2. Add compressor station\n";
-    cout << "3. View all objects\n";
-    cout << "4. Edit pipe\n";
-    cout << "5. Edit compressor station\n";
-    cout << "6. Save\n";
-    cout << "7. Load\n";
-    cout << "0. Return to menu\n";
+    return 0;
 
 }

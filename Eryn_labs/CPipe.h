@@ -12,7 +12,7 @@ public:
     std::string name;
     double length;
     int diameter;
-    bool reparied;
+    bool repaired;
 
     CPipe();
 

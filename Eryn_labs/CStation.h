@@ -11,8 +11,8 @@ public:
     int id;
     static int MaxId;
     std::string name;
-    int number_of_guild;
-    int number_of_working_guild;
+    int number_of_workshops;
+    int number_of_working_workshops;
     float effectiveness;
 
     CStation();

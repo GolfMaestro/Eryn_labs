@@ -112,15 +112,15 @@ bool check_by_name(const T& s, string param)
     return found;
 }
 
-bool check_by_reparied(const CPipe& s, bool param)
+bool check_by_repaired(const CPipe& s, bool param)
 {
-    return s.reparied == param;
+    return s.repaired == param;
 }
 
-bool check_by_working_guilds(const CStation& s, double target)
+bool check_by_working_workshops(const CStation& s, double target)
 {
-    double wg = s.number_of_working_guild;
-    double g = s.number_of_guild;
+    double wg = s.number_of_working_workshops;
+    double g = s.number_of_workshops;
     return ((g - wg) / g) * 100 == target;
 }
 
@@ -128,7 +128,6 @@ void find_pipe(const unordered_map<int, CPipe>& pipes) {
 
     if (pipes.size() == 0) {
         cout << "Pipes doesn't exist\n";
-        return;
     }
 
     string name;
@@ -140,7 +139,7 @@ void find_pipe(const unordered_map<int, CPipe>& pipes) {
     if (command) {
         cout << "Enter reparied status (0 - no, 1 - yes): " << endl;
         cin >> status;
-        for (auto i : find_pipe_by_filter(pipes, check_by_reparied, status))
+        for (auto i : find_pipe_by_filter(pipes, check_by_repaired, status))
             cout << i.second;
     }
     else {
@@ -162,13 +161,13 @@ void find_station(const unordered_map<int, CStation>& stations) {
 
     string name;
     int command;
-    cout << "Find station by name - 0, find station by percentage of not working guilds - 1 :" << endl;
+    cout << "Find station by name - 0, find station by percentage of not working workshops - 1 :" << endl;
     command = get_correct_number(0, 1);
 
     if (command) {
-        cout << "Enter percentage of not working guilds" << endl;
+        cout << "Enter percentage of not working workshops" << endl;
         double target = get_correct_number(0.0, 100.0);
-        for (auto i : find_station_by_filter(stations, check_by_working_guilds, target))
+        for (auto i : find_station_by_filter(stations, check_by_working_workshops, target))
             cout << i.second;
     }
     else {
@@ -190,7 +189,6 @@ void menu() {
     cout << "5.  Edit compressor station\n";
     cout << "6.  Save\n";
     cout << "7.  Load\n";
-    cout << "0.  Return to menu\n";
     cout << "8.  Find pipe by filter\n";
     cout << "9.  Find station by filter\n";
     cout << "10. Delete object by id\n";

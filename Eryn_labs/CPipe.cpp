@@ -52,9 +52,12 @@ istream& operator >> (istream& in, CPipe& p) {
     getline(in, p.name);
     cout << "Length" << endl;
     p.length = get_correct_number(1.0, 1000.0);
-    cout << "Diameter" << endl;
+    cout << "Diameter. Type number 500, 700, 1000 or 1400:" << endl;
     p.diameter = get_correct_diameter();
     cout << "Is repaired (1 - yes, 0 - no): " << endl;
     p.repaired = get_correct_number(0, 1);
     return in;
 }
+
+// function for save and load - not this
+// here only edit and read one pipe

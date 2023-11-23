@@ -64,6 +64,7 @@ void edit_stations(unordered_map<int, CStation>& stations) {
 
 void delete_object(unordered_map<int, CPipe>& pipes, unordered_map<int, CStation>& stations) {
 
+    show_objects(pipes, stations);
     int id;
     cout << "Delete pipe - 0, delete station - 1" << endl;
     int command = get_correct_number(0, 1);

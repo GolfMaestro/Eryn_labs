@@ -25,7 +25,7 @@ void save_to_file(unordered_map<int, CPipe>& pipes, unordered_map<int, CStation>
         fout << pipes.size() << endl;
         if (pipes.size() > 0) {
             for (auto& p : pipes) {
-                fout << p.second.name << endl << p.second.length << endl << p.second.diameter << endl << p.second.repaired << endl;
+                fout << p.second.name << endl << p.second.length << endl << p.second.diameter << endl << p.second.repaired << endl << p.second.id << endl;
             };
             cout << "Pipe successfully saved!" << " " << "Please, check your file." << endl;
         }
@@ -33,7 +33,7 @@ void save_to_file(unordered_map<int, CPipe>& pipes, unordered_map<int, CStation>
         fout << stations.size() << endl;
         if (stations.size() > 0) {
             for (auto& s : stations) {
-                fout << s.second.name << endl << s.second.number_of_workshops << endl << s.second.number_of_working_workshops << endl << s.second.effectiveness << endl;
+                fout << s.second.name << endl << s.second.number_of_workshops << endl << s.second.number_of_working_workshops << endl << s.second.effectiveness << endl << s.second.id << endl;
             }
             cout << "Station successfully saved!" << " " << "Please, check your file." << endl;
         }
@@ -69,7 +69,7 @@ void load_from_file(unordered_map<int, CPipe>& pipes, unordered_map<int, CStatio
             CPipe p;
             fin.ignore();
             getline(fin, p.name);
-            fin >> p.length >> p.diameter >> p.repaired;
+            fin >> p.length >> p.diameter >> p.repaired >> p.id;
             pipes.insert({ p.id, p });
         }
         fin >> counter;
@@ -77,7 +77,7 @@ void load_from_file(unordered_map<int, CPipe>& pipes, unordered_map<int, CStatio
             CStation s;
             fin.ignore();
             getline(fin, s.name);
-            fin >> s.number_of_workshops >> s.number_of_working_workshops >> s.effectiveness;
+            fin >> s.number_of_workshops >> s.number_of_working_workshops >> s.effectiveness >> s.id;
             stations.insert({ s.id, s });
         }
     }

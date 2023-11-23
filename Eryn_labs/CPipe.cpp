@@ -59,5 +59,3 @@ istream& operator >> (istream& in, CPipe& p) {
     return in;
 }
 
-// function for save and load - not this
-// here only edit and read one pipe

@@ -125,12 +125,15 @@ bool check_by_working_workshops(const CStation& s, double target)
     return ((g - wg) / g) * 100 == target;
 }
 
-void find_pipe(const unordered_map<int, CPipe>& pipes) {
+void find_pipe(unordered_map<int, CPipe>& pipes) {
 
     if (pipes.size() == 0) {
         cout << "Pipes doesn't exist\n";
     }
 
+    //unordered_map<int, CPipe> pipes_temp;
+
+    vector<int> change;
     string name;
     int command;
     bool status;
@@ -140,8 +143,22 @@ void find_pipe(const unordered_map<int, CPipe>& pipes) {
     if (command) {
         cout << "Enter reparied status (0 - no, 1 - yes): " << endl;
         cin >> status;
-        for (auto i : find_pipe_by_filter(pipes, check_by_repaired, status))
+        for (auto i : find_pipe_by_filter(pipes, check_by_repaired, status)) {
             cout << i.second;
+            change.push_back(i.second.id);
+        }
+        cout << "Would you like to change status? (0 - no, 1 - yes)" << endl;
+        int change_status = get_correct_number(0, 1);
+        if (change_status) {
+            //for (auto i : find_pipe_by_filter(pipes, check_by_repaired, status)) {
+            for (auto i : pipes) {
+                //if (i.second.id == change[i]) {
+                if (count(change.begin(), change.end(), i.second.id)) {
+                    i.second.repaired = !i.second.repaired;
+                    cout << "HEY";
+                }
+            }
+        }
     }
     else {
         cout << "Enter name: " << endl;

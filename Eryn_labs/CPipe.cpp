@@ -1,29 +1,54 @@
 #pragma once
 #include <iostream>
 #include <string>
-#include "utils.h"
 #include "CPipe.h"
+
 
 using namespace std;
 
 int CPipe::MaxId = 0;
 
-CPipe::CPipe() {
+CPipe::CPipe()
+{
     id = MaxId++;
+    in_system = false;
 }
 
-void CPipe::edit_pipe() {
-    repaired = !repaired;
-    cout << "Pipe name: " << name << "  Pipe status: (1 - is repaired, 0 - is not repaired): " << repaired << endl;
+template <typename T>
+T get_correct_number(T min, T max)
+{
+    T x;
+    while ((cin >> x).fail()
+        || cin.peek() != '\n'
+        || x < min || x > max)
+    {
+        cin.clear();
+        cin.ignore(10000, '\n');
+        cout << "Type number (" << min << "-" << max << "):";
+    }
+    return x;
 }
 
-CPipe& CPipe::select_pipe(std::vector<CPipe>& pipes) {
+void CPipe::edit_pipe()
+{
+    reparied = !reparied;
+    cout << "Pipe name: " << name << "  Pipe status: (1 - is reparied, 0 - is not reparied): " << reparied << endl;
+}
+
+std::string CPipe::get_type()
+{
+    return "Oil pipe";
+}
+
+CPipe& CPipe::select_pipe(std::vector<CPipe>& pipes)
+{
     cout << "Enter id: " << endl;
     int id = get_correct_number(0, CPipe::MaxId - 1);
     for (auto i : pipes) if (i.id == id) return i;
 }
 
-int get_correct_diameter() {
+int get_correct_diameter()
+{
     int x;
     while ((cin >> x).fail()
         || cin.peek() != '\n'
@@ -41,7 +66,8 @@ ostream& operator << (ostream& out, const CPipe& p) {
         << "\tName: " << p.name
         << "\tLength: " << p.length
         << "\tDiameter: " << p.diameter
-        << "\tRepaired: " << p.repaired << endl;
+        << "\tReparied (1 - yes, 0 - no): " << p.reparied
+        << "\tIs in system (1 - yes, 0 - no): " << p.in_system << endl;
     return out;
 }
 
@@ -52,10 +78,9 @@ istream& operator >> (istream& in, CPipe& p) {
     getline(in, p.name);
     cout << "Length" << endl;
     p.length = get_correct_number(1.0, 1000.0);
-    cout << "Diameter. Type number 500, 700, 1000 or 1400:" << endl;
+    cout << "Diameter" << endl;
     p.diameter = get_correct_diameter();
-    cout << "Is repaired (1 - yes, 0 - no): " << endl;
-    p.repaired = get_correct_number(0, 1);
+    cout << "Is reparied (1 - yes, 0 - no): " << endl;
+    p.reparied = get_correct_number(0, 1);
     return in;
 }
-

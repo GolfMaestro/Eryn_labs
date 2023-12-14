@@ -129,12 +129,13 @@
   <ItemGroup>
     <ClCompile Include="CPipe.cpp" />
     <ClCompile Include="CStation.cpp" />
+    <ClCompile Include="CSystem.cpp" />
     <ClCompile Include="Eryn_labs.cpp" />
-    <ClCompile Include="utils.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CPipe.h" />
     <ClInclude Include="CStation.h" />
+    <ClInclude Include="CSystem.h" />
     <ClInclude Include="utils.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

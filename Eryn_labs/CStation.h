@@ -25,4 +25,3 @@ public:
     std::string get_type();
     friend CStation& select_station(std::unordered_map<int, CStation>& stations);
 };
-

@@ -74,4 +74,3 @@ CStation& select_station(std::unordered_map<int, CStation>& stations) {
     int id = get_correct_number(0, CStation::MaxId - 1);
     for (auto& i : stations) if (i.first == id) return i.second;
 }
-
